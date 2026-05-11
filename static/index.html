@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aurix Capital — Live Dashboard</title>
+  <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#0c0c0f;color:#e0e0e0}
+
+    /* ── Header ── */
+    header{
+      background:#12121a;padding:14px 24px;
+      display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid #1e1e2e;
+    }
+    .hl h1{font-size:1.15rem;color:#7c83fd;letter-spacing:1px}
+    .hl span{font-size:.68rem;color:#444;text-transform:uppercase;letter-spacing:2px}
+    .hr{display:flex;align-items:center;gap:10px}
+
+    #ws-dot{width:8px;height:8px;border-radius:50%;background:#555;display:inline-block;transition:background .4s}
+    #ws-dot.live{background:#4caf50;animation:pulse 2s infinite}
+    #ws-dot.dead{background:#f44336}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    #ws-label{font-size:.72rem;color:#666;margin-right:4px}
+
+    .btn{border:none;border-radius:6px;cursor:pointer;font-size:.8rem;font-weight:700;padding:7px 16px}
+    .btn-purple{background:#7c83fd;color:#fff}.btn-purple:hover{background:#5c63dd}
+    .btn-orange{background:#ff9800;color:#000}.btn-orange:hover{background:#e68900}
+
+    #last-updated{font-size:.72rem;color:#555}
+
+    /* ── Token panel ── */
+    .token-panel{
+      background:#1a1200;border-bottom:1px solid #3a2800;
+      padding:12px 24px;display:none;flex-wrap:wrap;gap:12px;align-items:center
+    }
+    .token-panel.open{display:flex}
+    .login-card{
+      background:#1e1600;border:1px solid #3a2800;border-radius:8px;
+      padding:10px 16px;display:flex;align-items:center;gap:12px;min-width:210px
+    }
+    .login-card .an{font-size:.82rem;font-weight:600}
+    .login-card .as{font-size:.7rem;margin-top:2px}
+    .as.ok{color:#4caf50}.as.err{color:#f44336}
+    .gtl{
+      background:#ff9800;color:#000;border:none;padding:5px 12px;
+      border-radius:5px;font-size:.75rem;font-weight:700;text-decoration:none;white-space:nowrap
+    }
+    .gtl:hover{background:#e68900}
+
+    /* ── Accounts bar ── */
+    .accounts-bar{
+      background:#0f0f14;padding:8px 24px;
+      display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid #1a1a22
+    }
+    .chip{
+      padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:600;
+      border:1px solid transparent
+    }
+    .chip.on{background:#1a3a1a;color:#4caf50;border-color:#4caf50}
+    .chip.off{background:#3a1a1a;color:#f44336;border-color:#f44336}
+
+    /* ── Tabs ── */
+    .tabs-bar{
+      background:#0f0f14;padding:0 24px;
+      display:flex;border-bottom:1px solid #1a1a22
+    }
+    .tab-btn{
+      padding:11px 26px;background:none;border:none;
+      color:#555;font-size:.85rem;font-weight:600;cursor:pointer;
+      border-bottom:2px solid transparent;transition:color .2s,border-color .2s;letter-spacing:.4px
+    }
+    .tab-btn:hover{color:#bbb}
+    .tab-btn.active{color:#7c83fd;border-bottom-color:#7c83fd}
+
+    .tab-content{display:none;padding:20px 24px}
+    .tab-content.active{display:block}
+
+    /* ── Position manager top bar ── */
+    .pm-bar{
+      display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px
+    }
+    .pm-metric{
+      background:#15151e;border:1px solid #1e1e2e;border-radius:10px;
+      padding:14px 20px;min-width:160px;cursor:default;transition:border-color .2s
+    }
+    .pm-metric.highlight{border-color:#7c83fd;background:#16163a}
+    .pm-metric .mlabel{font-size:.65rem;color:#555;text-transform:uppercase;letter-spacing:1px}
+    .pm-metric .mvalue{font-size:1.4rem;font-weight:700;margin-top:4px}
+    .pm-metric .msub{font-size:.72rem;color:#555;margin-top:2px}
+
+    /* ── Filter bar ── */
+    .filter-bar{
+      display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap
+    }
+    .f-btn{
+      background:none;border:1px solid #2a2a3a;border-radius:6px;
+      color:#666;font-size:.78rem;font-weight:600;padding:5px 14px;cursor:pointer
+    }
+    .f-btn.active,.f-btn:hover{background:#7c83fd;border-color:#7c83fd;color:#fff}
+    .f-sep{width:1px;height:20px;background:#2a2a3a;margin:0 4px}
+    .f-right{margin-left:auto}
+
+    /* ── Cards grid ── */
+    .cards-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+      gap:16px
+    }
+
+    /* ── Stock card ── */
+    .stock-card{
+      background:#15151e;border:1px solid #1e1e2e;border-radius:12px;
+      overflow:hidden;transition:border-color .2s,box-shadow .2s
+    }
+    .stock-card:hover{border-color:#333;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+
+    .card-header{
+      display:flex;justify-content:space-between;align-items:flex-start;
+      padding:14px 16px 10px
+    }
+    .card-name{font-size:.95rem;font-weight:700;color:#e0e0e0}
+    .card-meta{font-size:.72rem;color:#555;margin-top:3px}
+    .card-pnl-block{text-align:right}
+    .card-pct{font-size:1.1rem;font-weight:700}
+    .card-abs{font-size:.78rem;margin-top:2px}
+
+    .positive{color:#4caf50;font-weight:600}
+    .negative{color:#f44336;font-weight:600}
+    .neutral{color:#888}
+
+    /* ── Mini chart ── */
+    .mini-chart{height:180px;width:100%;position:relative;background:#12121a}
+    .chart-loading{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      font-size:.75rem;color:#444
+    }
+
+    /* ── Card footer ── */
+    .card-footer{
+      display:flex;justify-content:space-between;
+      padding:10px 16px;border-top:1px solid #1a1a22;
+      font-size:.78rem;color:#666
+    }
+    .card-footer .cmp{font-weight:600;color:#e0e0e0}
+
+    /* ── Badge ── */
+    .badge{
+      display:inline-block;padding:1px 7px;border-radius:4px;
+      font-size:.65rem;font-weight:700;margin-left:6px;vertical-align:middle
+    }
+    .badge-buy{background:#1a3a1a;color:#4caf50}
+    .badge-sell{background:#3a1a1a;color:#f44336}
+
+    /* ── Holdings/Recent table ── */
+    table{width:100%;border-collapse:collapse;font-size:.83rem;background:#15151e;border-radius:10px;overflow:hidden}
+    thead tr{background:#1a1a2e}
+    th{padding:11px 14px;text-align:left;color:#666;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px}
+    tbody tr{border-bottom:1px solid #1a1a22;transition:background .15s}
+    tbody tr:hover{background:#1c1c28}
+    td{padding:10px 14px}
+    .error-row td{color:#f44336;font-style:italic}
+    .empty-msg{text-align:center;padding:40px;color:#333}
+
+    /* ── Day chip ── */
+    .day-chip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.7rem;font-weight:700}
+    .day-chip.fresh{background:#1a3a1a;color:#4caf50;border:1px solid #4caf50}
+    .day-chip.recent{background:#1a2a3a;color:#7c83fd;border:1px solid #7c83fd}
+    .day-chip.older{background:#2a2a1a;color:#ff9800;border:1px solid #ff9800}
+
+    .section-label{font-size:.72rem;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #1a1a22}
+
+    .tab-toolbar{display:flex;align-items:center;gap:10px;padding:0 0 16px 0;flex-wrap:wrap}
+    .tab-toolbar select{
+      background:#15151e;color:#e0e0e0;border:1px solid #2a2a3a;
+      padding:5px 12px;border-radius:6px;font-size:.8rem;cursor:pointer
+    }
+    .tab-toolbar .label-tag{font-size:.78rem;color:#666}
+
+    /* ── Flash ── */
+    @keyframes flash-green{0%{background:#1a4a1a}100%{background:transparent}}
+    @keyframes flash-red{0%{background:#4a1a1a}100%{background:transparent}}
+    .flash-up{animation:flash-green .5s ease}
+    .flash-down{animation:flash-red .5s ease}
+
+    .spinner{
+      display:inline-block;width:12px;height:12px;
+      border:2px solid #333;border-top-color:#7c83fd;
+      border-radius:50%;animation:spin .7s linear infinite;
+      vertical-align:middle;margin-left:6px
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="hl">
+    <h1>AURIX CAPITAL</h1>
+    <span>Live Trading Dashboard</span>
+  </div>
+  <div class="hr">
+    <span id="ws-dot"></span>
+    <span id="ws-label">Connecting…</span>
+    <span id="last-updated"></span>
+    <button class="btn btn-orange" onclick="toggleTokenPanel()">&#128273; Generate Token</button>
+    <button class="btn btn-purple" onclick="refreshAll()">
+      Refresh <span id="spinner" class="spinner hidden"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ── Token panel ── -->
+<div class="token-panel" id="token-panel">
+  <span style="font-size:.8rem;color:#aaa">Select account &rarr;</span>
+  <div id="token-cards"></div>
+</div>
+
+<!-- ── Accounts bar ── -->
+<div class="accounts-bar" id="accounts-bar"></div>
+
+<!-- ── Tabs ── -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('positions')">Positions</button>
+  <button class="tab-btn"        onclick="switchTab('holdings')">Holdings</button>
+  <button class="tab-btn"        onclick="switchTab('recent')">Recent Holdings</button>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     POSITIONS TAB — card layout
+═══════════════════════════════════════════════════ -->
+<div id="tab-positions" class="tab-content active">
+
+  <!-- Metrics bar -->
+  <div class="pm-bar" id="pm-bar">
+    <div class="pm-metric">
+      <div class="mlabel">% Invested</div>
+      <div class="mvalue" id="pm-invested">—</div>
+      <div class="msub"  id="pm-invested-sub"></div>
+    </div>
+    <div class="pm-metric highlight">
+      <div class="mlabel">Day's P&amp;L</div>
+      <div class="mvalue" id="pm-day-pnl">—</div>
+      <div class="msub"  id="pm-day-pnl-sub"></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">Total P&amp;L</div>
+      <div class="mvalue" id="pm-total-pnl">—</div>
+      <div class="msub"  id="pm-total-pnl-sub"></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">Open Positions</div>
+      <div class="mvalue" id="pm-count">—</div>
+      <div class="msub"  id="pm-count-sub"></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">Total Value</div>
+      <div class="mvalue" id="pm-value">—</div>
+      <div class="msub" id="pm-value-sub"></div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <button class="f-btn active" onclick="filterCards('all',this)">All</button>
+    <button class="f-btn" onclick="filterCards('buy',this)">Long</button>
+    <button class="f-btn" onclick="filterCards('sell',this)">Short</button>
+    <div class="f-sep"></div>
+    <button class="f-btn f-right btn-purple" onclick="syncTrades(this)">&#8635; Sync Trades</button>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid" id="positions-cards">
+    <div style="color:#333;padding:40px;text-align:center;grid-column:1/-1">Loading…</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     HOLDINGS TAB — cards + table
+═══════════════════════════════════════════════════ -->
+<div id="tab-holdings" class="tab-content">
+  <div class="pm-bar">
+    <div class="pm-metric">
+      <div class="mlabel">Holdings</div>
+      <div class="mvalue" id="hl-count">—</div>
+      <div class="msub" id="hl-count-sub"></div>
+    </div>
+    <div class="pm-metric highlight">
+      <div class="mlabel">Total P&amp;L</div>
+      <div class="mvalue" id="hl-pnl">—</div>
+      <div class="msub" id="hl-pnl-sub"></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">Day Change</div>
+      <div class="mvalue" id="hl-dayc">—</div>
+      <div class="msub" id="hl-dayc-sub"></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">Total Value</div>
+      <div class="mvalue" id="hl-value">—</div>
+      <div class="msub" id="hl-value-sub"></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">Invested</div>
+      <div class="mvalue" id="hl-invested">—</div>
+      <div class="msub" id="hl-invested-sub"></div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid" id="holdings-cards">
+    <div style="color:#333;padding:40px;text-align:center;grid-column:1/-1">Loading…</div>
+  </div>
+
+  <!-- Table -->
+  <div class="section-label">All Holdings</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th><th>Exchange</th><th>Qty</th>
+        <th>Avg Price</th><th>LTP</th>
+        <th>P&amp;L</th><th>% Return</th><th>Day Change</th><th>Value</th>
+      </tr>
+    </thead>
+    <tbody id="holdings-body">
+      <tr><td colspan="9" class="empty-msg">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     RECENT HOLDINGS TAB — cards + table
+═══════════════════════════════════════════════════ -->
+<div id="tab-recent" class="tab-content">
+  <div class="tab-toolbar">
+    <span class="label-tag">Show holdings from last</span>
+    <select id="recent-days" onchange="loadRecentHoldings()">
+      <option value="3">3 days</option>
+      <option value="7" selected>7 days</option>
+      <option value="14">14 days</option>
+      <option value="30">30 days</option>
+      <option value="90">90 days</option>
+    </select>
+    <div class="pm-bar" style="margin:0 0 0 auto;gap:10px">
+      <div class="pm-metric" style="min-width:120px;padding:10px 14px">
+        <div class="mlabel">Shown</div>
+        <div class="mvalue" id="rh-count" style="font-size:1.1rem">—</div>
+      </div>
+      <div class="pm-metric highlight" style="min-width:120px;padding:10px 14px">
+        <div class="mlabel">Total P&amp;L</div>
+        <div class="mvalue" id="rh-pnl" style="font-size:1.1rem">—</div>
+      </div>
+      <div class="pm-metric" style="min-width:120px;padding:10px 14px">
+        <div class="mlabel">Day Change</div>
+        <div class="mvalue" id="rh-dayc" style="font-size:1.1rem">—</div>
+      </div>
+      <div class="pm-metric" style="min-width:120px;padding:10px 14px">
+        <div class="mlabel">Current Value</div>
+        <div class="mvalue" id="rh-value" style="font-size:1.1rem">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid" id="recent-cards">
+    <div style="color:#333;padding:40px;text-align:center;grid-column:1/-1">Loading…</div>
+  </div>
+
+  <!-- Table -->
+  <div class="section-label">Detail View</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th><th>Qty</th><th>Avg (Kite)</th><th>Avg (DB)</th>
+        <th>LTP</th><th>P&amp;L</th><th>% Return</th><th>Day Change</th><th>Value</th>
+        <th>First Bought</th><th>Held</th>
+      </tr>
+    </thead>
+    <tbody id="recent-body">
+      <tr><td colspan="11" class="empty-msg">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+const R = '&#8377;';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let positionData      = [];   // raw from /positions
+let holdingData       = [];   // raw from /holdings
+let positionMap       = {};   // token → { qty, avg, close, ltp }
+let holdingMap        = {};
+let recentHoldingMap  = {};
+let currentLtp        = {};
+let charts            = {};   // token → { chart, candleSeries }
+let ws                = null;
+let currentFilter     = 'all';
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmt(n, dec=2) {
+  if (n==null||isNaN(n)) return '—';
+  return parseFloat(n).toLocaleString('en-IN',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+}
+function fmtK(n) {
+  if (n==null||isNaN(n)) return '—';
+  const v = Math.abs(n);
+  if (v>=10000000) return (n/10000000).toFixed(2)+'Cr';
+  if (v>=100000)   return (n/100000).toFixed(2)+'L';
+  if (v>=1000)     return (n/1000).toFixed(1)+'K';
+  return fmt(n);
+}
+function pc(v){ return v>=0?'positive':'negative' }
+function setEl(id,html){ const e=document.getElementById(id); if(e) e.innerHTML=html }
+function setClass(id,cls){ const e=document.getElementById(id); if(e) e.className=cls }
+function setPnl(id,v){ setEl(id, R+fmt(v)); setClass(id, pc(v)) }
+
+function flashLtp(id, ltp) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const prev = parseFloat(el.dataset.ltp||ltp);
+  el.innerHTML = R+fmt(ltp);
+  el.dataset.ltp = ltp;
+  if (ltp!==prev) {
+    el.classList.remove('flash-up','flash-down');
+    void el.offsetWidth;
+    el.classList.add(ltp>prev?'flash-up':'flash-down');
+  }
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelector(`.tab-btn[onclick="switchTab('${name}')"]`).classList.add('active');
+  setTimeout(resizeAllCharts, 50);
+}
+
+// ── Token panel ───────────────────────────────────────────────────────────────
+function toggleTokenPanel(){
+  document.getElementById('token-panel').classList.toggle('open');
+}
+async function loadAccounts(){
+  const res=await fetch('/status'); const accounts=await res.json();
+  document.getElementById('accounts-bar').innerHTML=accounts.map(a=>
+    `<span class="chip ${a.logged_in?'on':'off'}">${a.logged_in?'&#10003;':'&#9888;'} ${a.name}</span>`
+  ).join('');
+  document.getElementById('token-cards').innerHTML=accounts.map(a=>`
+    <div class="login-card">
+      <div><div class="an">${a.name}</div>
+        <div class="as ${a.logged_in?'ok':'err'}">${a.logged_in?'&#10003; Active':'&#9888; No token'}</div>
+      </div>
+      <a class="gtl" href="/login/${a.index}" target="_blank">&#128273; Login</a>
+    </div>`).join('');
+}
+
+// ── Positions: card layout ────────────────────────────────────────────────────
+async function loadPositions(){
+  const res  = await fetch('/positions');
+  positionData = await res.json();
+
+  const errors    = positionData.filter(p=>p.error);
+  const positions = positionData.filter(p=>!p.error);
+
+  // Build maps
+  positionMap = {};
+  let totalInvested=0, totalValue=0, totalPnl=0, totalDayPnl=0;
+
+  positions.forEach(p=>{
+    const token = String(p.instrument_token);
+    const invested = Math.abs(p.quantity) * p.average_price;
+    const value    = Math.abs(p.quantity) * (p.last_price||0);
+    positionMap[token]={
+      quantity:p.quantity, average_price:p.average_price,
+      close_price:p.close_price||0, ltp:p.last_price||0,
+      invested, symbol:p.tradingsymbol
+    };
+    if(!currentLtp[token]) currentLtp[token]=p.last_price||0;
+    totalInvested += invested;
+    totalValue    += value;
+    totalPnl      += parseFloat(p.pnl||0);
+    totalDayPnl   += parseFloat(p.m2m||0);
+  });
+
+  // Metrics bar
+  setEl('pm-count', positions.length);
+  setEl('pm-count-sub', errors.length? `${errors.length} error(s)` : 'open');
+  setEl('pm-day-pnl', (totalDayPnl>=0?'+':'')+R+fmtK(totalDayPnl));
+  setClass('pm-day-pnl', 'mvalue '+pc(totalDayPnl));
+  setEl('pm-day-pnl-sub', fmt(totalDayPnl/totalValue*100,2)+'% of value');
+  setEl('pm-total-pnl', (totalPnl>=0?'+':'')+R+fmtK(totalPnl));
+  setClass('pm-total-pnl', 'mvalue '+pc(totalPnl));
+  setEl('pm-total-pnl-sub', fmt(totalPnl/totalInvested*100,2)+'% return');
+  setEl('pm-value', R+fmtK(totalValue));
+  setEl('pm-value-sub', 'invested '+R+fmtK(totalInvested));
+
+  // Funds for % invested
+  try {
+    const fr = await fetch('/funds'); const fd = await fr.json();
+    if (!fd.error) {
+      const total   = totalValue + (fd.available_cash||0);
+      const pctInv  = total>0 ? (totalValue/total*100).toFixed(1) : '—';
+      setEl('pm-invested', pctInv+'%');
+      setEl('pm-invested-sub', R+fmtK(totalValue)+' of '+R+fmtK(total));
+    }
+  } catch(_){}
+
+  renderCards(positions, errors, totalInvested);
+}
+
+function renderCards(positions, errors, totalInvested){
+  const grid = document.getElementById('positions-cards');
+  if(!positions.length && !errors.length){
+    grid.innerHTML='<div style="color:#333;padding:40px;text-align:center;grid-column:1/-1">No open positions</div>';
+    return;
+  }
+
+  grid.innerHTML = positions.map(p=>{
+    const token    = String(p.instrument_token);
+    const qty      = Math.abs(p.quantity);
+    const side     = p.quantity>0?'buy':'sell';
+    const invested = qty * p.average_price;
+    const value    = qty * (p.last_price||0);
+    const pnl      = parseFloat(p.pnl||0);
+    const pnlPct   = invested>0 ? (pnl/invested*100) : 0;
+    const sizeP    = totalInvested>0 ? (invested/totalInvested*100).toFixed(1) : '0';
+    const hidden   = (currentFilter!=='all' && currentFilter!==side) ? 'style="display:none"' : '';
+    return `
+    <div class="stock-card" data-token="${token}" data-side="${side}" ${hidden}>
+      <div class="card-header">
+        <div>
+          <div class="card-name">
+            ${p.tradingsymbol}
+            <span class="badge badge-${side}">${side.toUpperCase()}</span>
+          </div>
+          <div class="card-meta">Size: ${sizeP}% &nbsp;·&nbsp; ${R}${fmtK(value)} &nbsp;·&nbsp; ${qty.toLocaleString()} qty</div>
+        </div>
+        <div class="card-pnl-block">
+          <div class="card-pct ${pc(pnlPct)}" id="crd-pct-${token}">
+            ${pnlPct>=0?'+':''}${fmt(pnlPct)}%
+          </div>
+          <div class="card-abs ${pc(pnl)}" id="crd-abs-${token}">
+            ${pnl>=0?'+':''}${R}${fmtK(pnl)}
+          </div>
+        </div>
+      </div>
+      <div class="mini-chart" id="chart-${token}">
+        <div class="chart-loading" id="chart-loading-${token}">Loading chart…</div>
+      </div>
+      <div class="card-footer">
+        <span>Entry <strong>${R}${fmt(p.average_price)}</strong></span>
+        <span class="cmp" id="crd-cmp-${token}" data-ltp="${p.last_price||0}">
+          CMP <strong>${R}${fmt(p.last_price)}</strong>
+        </span>
+      </div>
+    </div>`;
+  }).join('') + errors.map(e=>`
+    <div class="stock-card">
+      <div class="card-header">
+        <div class="card-name">${e.account}</div>
+        <div style="color:#f44336;font-size:.78rem">${e.error}</div>
+      </div>
+    </div>`).join('');
+
+  positions.forEach((p,i)=>setTimeout(()=>renderChartFor(p,'ps'),i*300));
+}
+
+
+// prefix: 'ps' (positions), 'hl' (holdings), 'rh' (recent)
+async function renderChartFor(item, prefix){
+  const token = String(item.instrument_token);
+  const containerId = prefix==='ps' ? 'chart-'+token : prefix+'chart-'+token;
+  const loadingId   = prefix==='ps' ? 'chart-loading-'+token : prefix+'chart-loading-'+token;
+  const chartKey    = prefix+'-'+token;
+
+  const container = document.getElementById(containerId);
+  if(!container) return;
+
+  if(charts[chartKey]){ charts[chartKey].chart.remove(); delete charts[chartKey]; }
+
+  const loading = document.getElementById(loadingId);
+
+  try {
+    const res  = await fetch(`/chart/${item.instrument_token}?days=180&interval=day`);
+    const data = await res.json();
+    if(data.error) throw new Error(data.error);
+    if(!Array.isArray(data)||!data.length) throw new Error('No data');
+
+    if(loading) loading.style.display='none';
+
+    const w = container.getBoundingClientRect().width || 340;
+    const chart = LightweightCharts.createChart(container, {
+      width: w, height: 180,
+      layout: { background:{color:'#12121a'}, textColor:'#555' },
+      grid:   { vertLines:{color:'#1a1a22'}, horzLines:{color:'#1a1a22'} },
+      crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+      rightPriceScale: { borderColor:'#1e1e2e', scaleMargins:{top:.1,bottom:.1} },
+      timeScale: { borderColor:'#1e1e2e', timeVisible:false },
+      handleScroll: false, handleScale: false,
+    });
+
+    const candles = chart.addCandlestickSeries({
+      upColor:'#4caf50', downColor:'#f44336',
+      borderUpColor:'#4caf50', borderDownColor:'#f44336',
+      wickUpColor:'#4caf50', wickDownColor:'#f44336',
+    });
+    candles.setData(data);
+
+    candles.createPriceLine({
+      price: item.average_price,
+      color: (item.quantity||0)>=0 ? '#7c83fd' : '#ff9800',
+      lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true, title: 'Entry',
+    });
+
+    const ltp = currentLtp[token] || item.last_price;
+    if(ltp){
+      candles.createPriceLine({
+        price: ltp, color:'#e0e0e0', lineWidth:1,
+        lineStyle: LightweightCharts.LineStyle.Dotted,
+        axisLabelVisible:true, title:'CMP',
+      });
+    }
+
+    chart.timeScale().fitContent();
+    charts[chartKey] = { chart, candles };
+
+    requestAnimationFrame(()=>{
+      const w2 = container.getBoundingClientRect().width;
+      if(w2 && w2!==w) chart.applyOptions({ width: w2 });
+    });
+  } catch(e){
+    if(loading){ loading.style.display='flex'; loading.textContent='Chart unavailable'; }
+  }
+}
+
+function resizeAllCharts(){
+  for(const [key, obj] of Object.entries(charts)){
+    const token = key.split('-').slice(1).join('-');
+    const prefix = key.split('-')[0];
+    const containerId = prefix==='ps' ? 'chart-'+token : prefix+'chart-'+token;
+    const container = document.getElementById(containerId);
+    if(container && obj.chart){
+      const w = container.getBoundingClientRect().width;
+      if(w) obj.chart.applyOptions({ width: w });
+    }
+  }
+}
+
+function filterCards(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-bar .f-btn:not(.f-right)').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.stock-card[data-side]').forEach(card=>{
+    card.style.display = (f==='all'||card.dataset.side===f) ? '' : 'none';
+  });
+}
+
+async function syncTrades(btn){
+  btn.textContent='Syncing…';
+  try{
+    const res=await fetch('/sync-trades');
+    const d=await res.json();
+    const ins=d.synced.reduce((s,r)=>s+(r.inserted||0),0);
+    btn.textContent=`✓ Synced +${ins} trades`;
+    setTimeout(()=>{ btn.innerHTML='&#8635; Sync Trades'; },3000);
+  } catch(_){ btn.innerHTML='&#8635; Sync Trades'; }
+}
+
+// ── Holdings — cards + table ──────────────────────────────────────────────────
+async function loadHoldings(){
+  const res=await fetch('/holdings');
+  holdingData=await res.json();
+  const errors=holdingData.filter(h=>h.error);
+  const holdings=holdingData.filter(h=>!h.error);
+
+  holdingMap={};
+  let totalPnl=0, totalDayC=0, totalVal=0, totalInv=0;
+  holdings.forEach(h=>{
+    const token=String(h.instrument_token);
+    holdingMap[token]={quantity:h.quantity,average_price:h.average_price,close_price:h.close_price||0,ltp:h.last_price||0};
+    if(!currentLtp[token]) currentLtp[token]=h.last_price||0;
+    totalPnl  += parseFloat(h.pnl||0);
+    totalDayC += (h.day_change||0)*h.quantity;
+    totalVal  += (h.last_price||0)*h.quantity;
+    totalInv  += (h.average_price||0)*h.quantity;
+  });
+
+  setEl('hl-count', holdings.length);
+  setEl('hl-count-sub', errors.length?`${errors.length} error(s)`:'stocks');
+  setEl('hl-pnl', (totalPnl>=0?'+':'')+R+fmtK(totalPnl));
+  setClass('hl-pnl','mvalue '+pc(totalPnl));
+  setEl('hl-pnl-sub', totalInv>0?fmt(totalPnl/totalInv*100,2)+'% return':'');
+  setEl('hl-dayc', (totalDayC>=0?'+':'')+R+fmtK(totalDayC));
+  setClass('hl-dayc','mvalue '+pc(totalDayC));
+  setEl('hl-value', R+fmtK(totalVal));
+  setEl('hl-value-sub', 'live value');
+  setEl('hl-invested', R+fmtK(totalInv));
+  setEl('hl-invested-sub', 'cost basis');
+
+  // ── Cards ──
+  const grid=document.getElementById('holdings-cards');
+  if(!holdings.length&&!errors.length){
+    grid.innerHTML='<div style="color:#333;padding:40px;text-align:center;grid-column:1/-1">No holdings</div>';
+  } else {
+    grid.innerHTML=holdings.map(h=>{
+      const token=String(h.instrument_token);
+      const pnl=parseFloat(h.pnl||0);
+      const invested=(h.average_price||0)*h.quantity;
+      const value=(h.last_price||0)*h.quantity;
+      const pnlPct=invested>0?(pnl/invested*100):0;
+      const sizeP=totalInv>0?(invested/totalInv*100).toFixed(1):'0';
+      return `
+      <div class="stock-card" data-token="${token}">
+        <div class="card-header">
+          <div>
+            <div class="card-name">${h.tradingsymbol} <span class="badge badge-buy">HOLD</span></div>
+            <div class="card-meta">Size: ${sizeP}% &nbsp;·&nbsp; ${R}${fmtK(value)} &nbsp;·&nbsp; ${h.quantity.toLocaleString()} qty</div>
+          </div>
+          <div class="card-pnl-block">
+            <div class="card-pct ${pc(pnlPct)}" id="hl-pct-${token}">${pnlPct>=0?'+':''}${fmt(pnlPct)}%</div>
+            <div class="card-abs ${pc(pnl)}" id="hl-abs-${token}">${pnl>=0?'+':''}${R}${fmtK(pnl)}</div>
+          </div>
+        </div>
+        <div class="mini-chart" id="hlchart-${token}">
+          <div class="chart-loading" id="hlchart-loading-${token}">Loading chart…</div>
+        </div>
+        <div class="card-footer">
+          <span>Avg <strong>${R}${fmt(h.average_price)}</strong></span>
+          <span class="cmp" id="hl-cmp-${token}" data-ltp="${h.last_price||0}">CMP <strong>${R}${fmt(h.last_price)}</strong></span>
+        </div>
+      </div>`;
+    }).join('') + errors.map(e=>`
+      <div class="stock-card"><div class="card-header">
+        <div class="card-name">${e.account}</div>
+        <div style="color:#f44336;font-size:.78rem">${e.error}</div>
+      </div></div>`).join('');
+
+    holdings.forEach((h,i)=>setTimeout(()=>renderChartFor(h,'hl'),i*300));
+  }
+
+  // ── Table ──
+  if(!holdings.length&&!errors.length){
+    document.getElementById('holdings-body').innerHTML=`<tr><td colspan="9" class="empty-msg">No holdings</td></tr>`;
+    return;
+  }
+  document.getElementById('holdings-body').innerHTML=
+    holdings.map(h=>{
+      const token=String(h.instrument_token);
+      const pnl=parseFloat(h.pnl||0);
+      const pnlPct=(h.average_price&&h.quantity)?pnl/((h.average_price*h.quantity))*100:0;
+      const dayChg=(h.day_change||0)*h.quantity;
+      const val=(h.last_price||0)*h.quantity;
+      return `<tr>
+        <td><strong>${h.tradingsymbol}</strong></td>
+        <td><span style="color:#555">${h.exchange}</span></td>
+        <td>${h.quantity.toLocaleString()}</td>
+        <td>${R}${fmt(h.average_price)}</td>
+        <td id="hl-ltp-${token}" data-ltp="${h.last_price||0}">${R}${fmt(h.last_price)}</td>
+        <td id="hl-pnl-${token}" class="${pc(pnl)}">${R}${fmt(pnl)}</td>
+        <td class="${pc(pnlPct)}">${pnlPct>=0?'+':''}${fmt(pnlPct)}%</td>
+        <td id="hl-dayc-${token}" class="${pc(dayChg)}">${R}${fmt(dayChg)}</td>
+        <td id="hl-val-${token}" class="neutral">${R}${fmt(val)}</td>
+      </tr>`;
+    }).join('')+
+    errors.map(e=>`<tr class="error-row"><td>${e.account}</td><td colspan="8">${e.error}</td></tr>`).join('');
+}
+
+// ── Recent Holdings — cards + table ──────────────────────────────────────────
+function dayChip(d){
+  if(d<=1)  return `<span class="day-chip fresh">${d===0?'Today':'Yesterday'}</span>`;
+  if(d<=3)  return `<span class="day-chip fresh">${d}d ago</span>`;
+  if(d<=7)  return `<span class="day-chip recent">${d}d ago</span>`;
+  return          `<span class="day-chip older">${d}d ago</span>`;
+}
+
+async function loadRecentHoldings(){
+  const days=document.getElementById('recent-days').value;
+  const res=await fetch(`/recent-holdings?days=${days}`);
+  const {holdings,errors}=await res.json();
+
+  recentHoldingMap={};
+  let totalPnl=0, totalDayC=0, totalVal=0;
+  holdings.forEach(h=>{
+    const token=String(h.instrument_token);
+    recentHoldingMap[token]={quantity:h.quantity,average_price:h.average_price,close_price:h.close_price||0,ltp:h.last_price||0};
+    if(!currentLtp[token]) currentLtp[token]=h.last_price||0;
+    totalPnl  += parseFloat(h.pnl||0);
+    totalDayC += (h.day_change||0)*h.quantity;
+    totalVal  += (h.last_price||0)*h.quantity;
+  });
+
+  setEl('rh-count', holdings.length);
+  setEl('rh-pnl', (totalPnl>=0?'+':'')+R+fmtK(totalPnl));
+  setClass('rh-pnl','mvalue '+pc(totalPnl));
+  setEl('rh-dayc', (totalDayC>=0?'+':'')+R+fmtK(totalDayC));
+  setClass('rh-dayc','mvalue '+pc(totalDayC));
+  setEl('rh-value', R+fmtK(totalVal));
+
+  // ── Cards ──
+  const grid=document.getElementById('recent-cards');
+  if(!holdings.length&&!errors.length){
+    grid.innerHTML=`<div style="color:#333;padding:40px;text-align:center;grid-column:1/-1">No holdings in last ${days} days</div>`;
+  } else {
+    grid.innerHTML=holdings.map(h=>{
+      const token=String(h.instrument_token);
+      const pnl=parseFloat(h.pnl||0);
+      const invested=(h.average_price||0)*h.quantity;
+      const value=(h.last_price||0)*h.quantity;
+      const pnlPct=invested>0?(pnl/invested*100):0;
+      const dChip=dayChip(h.days_held??0);
+      return `
+      <div class="stock-card" data-token="${token}">
+        <div class="card-header">
+          <div>
+            <div class="card-name">${h.tradingsymbol} ${dChip}</div>
+            <div class="card-meta">${R}${fmtK(value)} &nbsp;·&nbsp; ${h.quantity.toLocaleString()} qty &nbsp;·&nbsp; Since ${h.first_buy||'—'}</div>
+          </div>
+          <div class="card-pnl-block">
+            <div class="card-pct ${pc(pnlPct)}" id="rh-pct-${token}">${pnlPct>=0?'+':''}${fmt(pnlPct)}%</div>
+            <div class="card-abs ${pc(pnl)}" id="rh-abs-${token}">${pnl>=0?'+':''}${R}${fmtK(pnl)}</div>
+          </div>
+        </div>
+        <div class="mini-chart" id="rhchart-${token}">
+          <div class="chart-loading" id="rhchart-loading-${token}">Loading chart…</div>
+        </div>
+        <div class="card-footer">
+          <span>Avg <strong>${R}${fmt(h.average_price)}</strong></span>
+          <span class="cmp" id="rh-cmp-${token}" data-ltp="${h.last_price||0}">CMP <strong>${R}${fmt(h.last_price)}</strong></span>
+        </div>
+      </div>`;
+    }).join('') + errors.map(e=>`
+      <div class="stock-card"><div class="card-header">
+        <div class="card-name">${e.account}</div>
+        <div style="color:#f44336;font-size:.78rem">${e.error}</div>
+      </div></div>`).join('');
+
+    holdings.forEach((h,i)=>setTimeout(()=>renderChartFor(h,'rh'),i*300));
+  }
+
+  // ── Table ──
+  if(!holdings.length&&!errors.length){
+    document.getElementById('recent-body').innerHTML=`<tr><td colspan="11" class="empty-msg">No holdings in last ${days} days</td></tr>`;
+    return;
+  }
+  document.getElementById('recent-body').innerHTML=
+    holdings.map(h=>{
+      const token=String(h.instrument_token);
+      const pnl=parseFloat(h.pnl||0);
+      const pnlPct=(h.average_price&&h.quantity)?pnl/(h.average_price*h.quantity)*100:0;
+      const dayChg=(h.day_change||0)*h.quantity;
+      const val=(h.last_price||0)*h.quantity;
+      const diff=h.avg_buy_db&&h.average_price?((h.average_price-h.avg_buy_db)/h.avg_buy_db*100).toFixed(2):null;
+      return `<tr>
+        <td><strong>${h.tradingsymbol}</strong><br><span style="color:#444;font-size:.7rem">${h.exchange}</span></td>
+        <td>${h.quantity.toLocaleString()}</td>
+        <td>${R}${fmt(h.average_price)}</td>
+        <td>${R}${fmt(h.avg_buy_db)}${diff!==null?`<br><span style="font-size:.7rem;color:${Math.abs(diff)<0.5?'#555':diff>0?'#f44336':'#4caf50'}">${diff>0?'+':''}${diff}%</span>`:''}</td>
+        <td id="rh-ltp-${token}" data-ltp="${h.last_price||0}">${R}${fmt(h.last_price)}</td>
+        <td id="rh-pnl-${token}" class="${pc(pnl)}">${R}${fmt(pnl)}</td>
+        <td class="${pc(pnlPct)}">${pnlPct>=0?'+':''}${fmt(pnlPct)}%</td>
+        <td id="rh-dayc-${token}" class="${pc(dayChg)}">${R}${fmt(dayChg)}</td>
+        <td id="rh-val-${token}" class="neutral">${R}${fmt(val)}</td>
+        <td style="color:#555;font-size:.8rem">${h.first_buy||'—'}</td>
+        <td>${dayChip(h.days_held??0)}</td>
+      </tr>`;
+    }).join('')+
+    errors.map(e=>`<tr class="error-row"><td>${e.account}</td><td colspan="10">${e.error}</td></tr>`).join('');
+}
+
+// ── Refresh all ───────────────────────────────────────────────────────────────
+async function refreshAll(){
+  document.getElementById('spinner').classList.remove('hidden');
+  try{
+    await loadAccounts();
+    await Promise.all([loadPositions(), loadHoldings(), loadRecentHoldings()]);
+    document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
+  } catch(e){ console.error(e) }
+  document.getElementById('spinner').classList.add('hidden');
+}
+
+// ── WebSocket ticks ───────────────────────────────────────────────────────────
+function onTick(ticks){
+  for(const [token, tick] of Object.entries(ticks)){
+    const ltp=tick.ltp, close=tick.close;
+    currentLtp[token]=ltp;
+
+    // ── Positions card ──
+    const pos=positionMap[token];
+    if(pos){
+      const pnl    = (ltp-pos.average_price)*pos.quantity;
+      const pnlPct = pos.invested>0 ? pnl/pos.invested*100 : 0;
+      const dayPnl = close?(ltp-close)*pos.quantity:0;
+
+      const cmpEl=document.getElementById('crd-cmp-'+token);
+      if(cmpEl){
+        const prev=parseFloat(cmpEl.dataset.ltp||ltp);
+        cmpEl.innerHTML=`CMP <strong>${R}${fmt(ltp)}</strong>`;
+        cmpEl.dataset.ltp=ltp;
+        cmpEl.classList.remove('flash-up','flash-down');
+        void cmpEl.offsetWidth;
+        if(ltp!==prev) cmpEl.classList.add(ltp>prev?'flash-up':'flash-down');
+      }
+      const pctEl=document.getElementById('crd-pct-'+token);
+      if(pctEl){ pctEl.innerHTML=(pnlPct>=0?'+':'')+fmt(pnlPct)+'%'; pctEl.className='card-pct '+pc(pnlPct); }
+      const absEl=document.getElementById('crd-abs-'+token);
+      if(absEl){ absEl.innerHTML=(pnl>=0?'+':'')+R+fmtK(pnl); absEl.className='card-abs '+pc(pnl); }
+    }
+
+    // ── Holdings card + table ──
+    const hld=holdingMap[token];
+    if(hld){
+      const pnl=(ltp-hld.average_price)*hld.quantity;
+      const pnlPct=hld.average_price>0?pnl/(hld.average_price*hld.quantity)*100:0;
+      const dayC=close?(ltp-close)*hld.quantity:0;
+      // card
+      const hlCmp=document.getElementById('hl-cmp-'+token);
+      if(hlCmp){ const prev=parseFloat(hlCmp.dataset.ltp||ltp); hlCmp.innerHTML=`CMP <strong>${R}${fmt(ltp)}</strong>`; hlCmp.dataset.ltp=ltp; hlCmp.classList.remove('flash-up','flash-down'); void hlCmp.offsetWidth; if(ltp!==prev) hlCmp.classList.add(ltp>prev?'flash-up':'flash-down'); }
+      const hlPct=document.getElementById('hl-pct-'+token); if(hlPct){ hlPct.innerHTML=(pnlPct>=0?'+':'')+fmt(pnlPct)+'%'; hlPct.className='card-pct '+pc(pnlPct); }
+      const hlAbs=document.getElementById('hl-abs-'+token); if(hlAbs){ hlAbs.innerHTML=(pnl>=0?'+':'')+R+fmtK(pnl); hlAbs.className='card-abs '+pc(pnl); }
+      // table
+      flashLtp('hl-ltp-'+token,ltp);
+      setPnl('hl-pnl-'+token,pnl);
+      setPnl('hl-dayc-'+token,dayC);
+      setEl('hl-val-'+token, R+fmt(ltp*hld.quantity));
+    }
+
+    // ── Recent Holdings card + table ──
+    const rh=recentHoldingMap[token];
+    if(rh){
+      const pnl=(ltp-rh.average_price)*rh.quantity;
+      const pnlPct=rh.average_price>0?pnl/(rh.average_price*rh.quantity)*100:0;
+      const dayC=close?(ltp-close)*rh.quantity:0;
+      // card
+      const rhCmp=document.getElementById('rh-cmp-'+token);
+      if(rhCmp){ const prev=parseFloat(rhCmp.dataset.ltp||ltp); rhCmp.innerHTML=`CMP <strong>${R}${fmt(ltp)}</strong>`; rhCmp.dataset.ltp=ltp; rhCmp.classList.remove('flash-up','flash-down'); void rhCmp.offsetWidth; if(ltp!==prev) rhCmp.classList.add(ltp>prev?'flash-up':'flash-down'); }
+      const rhPct=document.getElementById('rh-pct-'+token); if(rhPct){ rhPct.innerHTML=(pnlPct>=0?'+':'')+fmt(pnlPct)+'%'; rhPct.className='card-pct '+pc(pnlPct); }
+      const rhAbs=document.getElementById('rh-abs-'+token); if(rhAbs){ rhAbs.innerHTML=(pnl>=0?'+':'')+R+fmtK(pnl); rhAbs.className='card-abs '+pc(pnl); }
+      // table
+      flashLtp('rh-ltp-'+token,ltp);
+      setPnl('rh-pnl-'+token,pnl);
+      setPnl('rh-dayc-'+token,dayC);
+      setEl('rh-val-'+token, R+fmt(ltp*rh.quantity));
+    }
+  }
+
+  // Recalculate metrics bar live
+  let dayPnl=0, totalPnl=0, totalVal=0, totalInv=0;
+  for(const [token,pos] of Object.entries(positionMap)){
+    const ltp=currentLtp[token]||pos.ltp||0;
+    const close=pos.close_price||0;
+    dayPnl   += close?(ltp-close)*pos.quantity:0;
+    totalPnl += (ltp-pos.average_price)*pos.quantity;
+    totalVal += Math.abs(ltp*pos.quantity);
+    totalInv += pos.invested||0;
+  }
+  setEl('pm-day-pnl', (dayPnl>=0?'+':'')+R+fmtK(dayPnl));
+  setClass('pm-day-pnl','mvalue '+pc(dayPnl));
+  setEl('pm-total-pnl', (totalPnl>=0?'+':'')+R+fmtK(totalPnl));
+  setClass('pm-total-pnl','mvalue '+pc(totalPnl));
+  setEl('pm-value', R+fmtK(totalVal));
+}
+
+// ── WebSocket ─────────────────────────────────────────────────────────────────
+function connectWS(){
+  const dot=document.getElementById('ws-dot');
+  const label=document.getElementById('ws-label');
+  dot.className=''; label.textContent='Connecting…';
+
+  ws=new WebSocket(`ws://${location.host}/ws`);
+  ws.onopen=()=>{
+    dot.className='live'; label.textContent='LIVE';
+    ws._ping=setInterval(()=>{ if(ws.readyState===WebSocket.OPEN) ws.send('ping'); },20000);
+  };
+  ws.onmessage=(e)=>{ const d=JSON.parse(e.data); if(!d.ping) onTick(d); };
+  ws.onclose=()=>{
+    clearInterval(ws._ping);
+    dot.className='dead'; label.textContent='Disconnected — reconnecting…';
+    setTimeout(connectWS,3000);
+  };
+  ws.onerror=()=>ws.close();
+}
+
+// ── Resize charts on window resize ───────────────────────────────────────────
+window.addEventListener('resize', ()=>{
+  if(document.getElementById('tab-positions').classList.contains('active'))
+    resizeAllCharts();
+});
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+refreshAll();
+connectWS();
+setInterval(refreshAll, 60000);
+</script>
+</body>
+</html>

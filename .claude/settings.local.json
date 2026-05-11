@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip --version)",
+      "Bash(py -m pip install -r requirements.txt)",
+      "Bash(curl -s http://127.0.0.1:8000/status)",
+      "Bash(start http://127.0.0.1:8000)",
+      "Bash(pkill -f \"uvicorn main:app\")",
+      "Bash(py -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:8000/)",
+      "Bash(py -c ' *)",
+      "Bash(py -m pip install \"uvicorn[standard]\" websockets)",
+      "Bash(py -m uvicorn main:app --host 127.0.0.1 --port 8000)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | Where-Object { $_.OwningProcess -ne 0 } | Select-Object LocalAddress, LocalPort, State, OwningProcess | ForEach-Object { $proc = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{ PID=$_.OwningProcess; State=$_.State; Name=$proc.Name } })",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" http://127.0.0.1:8001/)",
+      "Bash(start http://127.0.0.1:8001)",
+      "Bash(py -m uvicorn trial:app --host 127.0.0.1 --port 8001)",
+      "Bash(curl -s -o /dev/null -w \"main:%{http_code}\" http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w \"trial:%{http_code}\" http://127.0.0.1:8001/)",
+      "Bash(curl -s http://127.0.0.1:8000/db-stats)",
+      "Bash(curl -s http://127.0.0.1:8000/recent-holdings?days=7)",
+      "Bash(py -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'total: {d[\\\\\"total\\\\\"]}, first: {d[\\\\\"holdings\\\\\"][0][\\\\\"tradingsymbol\\\\\"] if d[\\\\\"holdings\\\\\"] else \\\\\"none\\\\\"}'\\)\")",
+      "Bash(py -c \"import sys; print\\(sys.version\\)\")",
+      "PowerShell(Get-Process -Name \"py\",\"python\",\"python3\",\"uvicorn\" -ErrorAction SilentlyContinue | ForEach-Object { $_.Kill\\(\\) }; Write-Host \"Done\")",
+      "Bash(py -m uvicorn main:app --host 0.0.0.0 --port 8000)",
+      "Bash(curl -s http://localhost:8000/ -o /dev/null -w \"%{http_code}\")",
+      "PowerShell(Start-Process \"http://localhost:8000\")",
+      "PowerShell(Get-Process -Name \"py\",\"python\" -ErrorAction SilentlyContinue)",
+      "Bash(curl -s http://localhost:8080/ -o /dev/null -w \"%{http_code}\")",
+      "PowerShell(Start-Process \"http://localhost:8080\")",
+      "PowerShell(Get-Process -Name \"py\",\"python\" -ErrorAction SilentlyContinue | ForEach-Object { $_.Kill\\(\\) }; Start-Sleep -Seconds 1; cd \"c:\\\\Users\\\\pc\\\\Desktop\\\\LIVE Dashboard\"; Start-Process -FilePath \"py\" -ArgumentList \"-m uvicorn main:app --host 0.0.0.0 --port 8080\" -WindowStyle Normal; Write-Host \"Restarted\")",
+      "Bash(curl -s \"http://localhost:8080/positions\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); positions=[p for p in data if not p.get\\('error'\\)]; print\\(json.dumps\\([{'symbol':p['tradingsymbol'],'token':p['instrument_token']} for p in positions[:3]], indent=2\\)\\)\")",
+      "Bash(curl -s \"http://localhost:8080/chart/3414273?days=180&interval=day\")",
+      "Bash(curl -s \"http://localhost:8080/callback?request_token=FukUdYn7jFTPn5DhWwlf1GPTTpKmPBnL\")",
+      "PowerShell(Get-Process -Name \"py\",\"python\" -ErrorAction SilentlyContinue | ForEach-Object { $_.Kill\\(\\) }; Start-Sleep -Seconds 1; cd \"c:\\\\Users\\\\pc\\\\Desktop\\\\LIVE Dashboard\"; Start-Process -FilePath \"py\" -ArgumentList \"-m uvicorn main:app --host 0.0.0.0 --port 8080\" -WindowStyle Normal; Start-Sleep -Seconds 3; Start-Process \"http://localhost:8080\"; Write-Host \"Done\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\pc\\Desktop\\LIVE Dashboard"
+    ]
+  }
+}

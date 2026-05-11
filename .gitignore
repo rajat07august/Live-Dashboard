@@ -1,0 +1,6 @@
+tokens.json
+trades.db
+__pycache__/
+*.pyc
+.env
+*.csv

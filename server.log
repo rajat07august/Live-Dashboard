@@ -1,0 +1,159 @@
+INFO:     Started server process [2084]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+[db] DB already has data, skipping CSV import
+INFO:     127.0.0.1:61549 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61552 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61552 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61554 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:61552 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61555 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61553 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 2
+INFO:     127.0.0.1:61574 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61575 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61576 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61574 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+INFO:     127.0.0.1:61584 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61585 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61586 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61584 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 2
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+INFO:     127.0.0.1:61584 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61586 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61585 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61584 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 2
+INFO:     127.0.0.1:61611 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61612 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61613 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61611 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 2
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 3
+INFO:     127.0.0.1:61657 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61658 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61659 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61657 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 2
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 3
+INFO:     127.0.0.1:61693 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61694 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61695 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61693 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 2
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 3
+INFO:     127.0.0.1:61726 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61727 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61726 - "GET /positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 1
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 2
+KiteTicker error 1006: connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+KiteTicker reconnecting… attempt 3
+INFO:     127.0.0.1:61763 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61764 - "GET /holdings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61765 - "GET /recent-holdings?days=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61763 - "GET /positions HTTP/1.1" 200 OK
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection error: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
+Connection closed: 1006 - connection was closed uncleanly (WebSocket connection upgrade failed (403 - Forbidden))
