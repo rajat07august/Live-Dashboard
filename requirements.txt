@@ -2,3 +2,4 @@ fastapi
 uvicorn[standard]
 websockets
 kiteconnect
+psycopg2-binary
