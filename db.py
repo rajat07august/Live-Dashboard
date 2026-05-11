@@ -9,9 +9,9 @@ import sqlite3
 from contextlib import contextmanager
 from datetime import datetime
 
-import os as _os
-DATA_DIR = _os.environ.get("DATA_DIR", ".")
-DB_PATH = _os.path.join(DATA_DIR, "trades.db")
+DATA_DIR = os.environ.get("DATA_DIR", ".")
+os.makedirs(DATA_DIR, exist_ok=True)
+DB_PATH = os.path.join(DATA_DIR, "trades.db")
 
 
 # ── Connection ────────────────────────────────────────────────────────────────
