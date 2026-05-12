@@ -38,6 +38,12 @@ _ticker_lock = threading.Lock()
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def load_tokens() -> dict:
+    try:
+        result = database._db().table("app_tokens").select("api_key,access_token").execute()
+        if result.data:
+            return {r["api_key"]: r["access_token"] for r in result.data}
+    except Exception:
+        pass
     if os.path.exists(TOKENS_FILE):
         with open(TOKENS_FILE) as f:
             return json.load(f)
@@ -45,8 +51,17 @@ def load_tokens() -> dict:
 
 
 def save_tokens(tokens: dict):
-    with open(TOKENS_FILE, "w") as f:
-        json.dump(tokens, f)
+    rows = [{"api_key": k, "access_token": v} for k, v in tokens.items() if v]
+    try:
+        if rows:
+            database._db().table("app_tokens").upsert(rows, on_conflict="api_key").execute()
+    except Exception:
+        pass
+    try:
+        with open(TOKENS_FILE, "w") as f:
+            json.dump(tokens, f)
+    except Exception:
+        pass
 
 
 # ── Startup ───────────────────────────────────────────────────────────────────
