@@ -7,16 +7,18 @@
   <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',sans-serif;background:#0c0c0f;color:#e0e0e0}
+    body{font-family:'Segoe UI',sans-serif;background:#080b14;color:#e0e0e0}
 
     /* ── Header ── */
     header{
-      background:#12121a;padding:14px 24px;
+      background:linear-gradient(180deg,#0e1528 0%,#0a1020 100%);
+      padding:14px 24px;
       display:flex;align-items:center;justify-content:space-between;
-      border-bottom:1px solid #1e1e2e;
+      border-bottom:1px solid #1c2540;
+      box-shadow:0 1px 24px rgba(99,102,241,.07);
     }
-    .hl h1{font-size:1.15rem;color:#7c83fd;letter-spacing:1px}
-    .hl span{font-size:.68rem;color:#444;text-transform:uppercase;letter-spacing:2px}
+    .hl h1{font-size:1.15rem;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}
+    .hl span{font-size:.68rem;color:#3a4060;text-transform:uppercase;letter-spacing:2px}
     .hr{display:flex;align-items:center;gap:10px}
 
     #ws-dot{width:8px;height:8px;border-radius:50%;background:#555;display:inline-block;transition:background .4s}
@@ -52,8 +54,8 @@
 
     /* ── Accounts bar ── */
     .accounts-bar{
-      background:#0f0f14;padding:8px 24px;
-      display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid #1a1a22
+      background:#0b0f1c;padding:8px 24px;
+      display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid #141928
     }
     .chip{
       padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:600;
@@ -64,8 +66,8 @@
 
     /* ── Tabs ── */
     .tabs-bar{
-      background:#0f0f14;padding:0 24px;
-      display:flex;border-bottom:1px solid #1a1a22
+      background:#0b0f1c;padding:0 24px;
+      display:flex;border-bottom:1px solid #141928
     }
     .tab-btn{
       padding:11px 26px;background:none;border:none;
@@ -83,10 +85,10 @@
       display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px
     }
     .pm-metric{
-      background:#15151e;border:1px solid #1e1e2e;border-radius:10px;
+      background:#0d1220;border:1px solid #1c2238;border-radius:10px;
       padding:14px 20px;min-width:160px;cursor:default;transition:border-color .2s
     }
-    .pm-metric.highlight{border-color:#7c83fd;background:#16163a}
+    .pm-metric.highlight{border-color:#7c83fd;background:#121840}
     .pm-metric .mlabel{font-size:.65rem;color:#555;text-transform:uppercase;letter-spacing:1px}
     .pm-metric .mvalue{font-size:1.4rem;font-weight:700;margin-top:4px}
     .pm-metric .msub{font-size:.72rem;color:#555;margin-top:2px}
@@ -96,11 +98,11 @@
       display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap
     }
     .f-btn{
-      background:none;border:1px solid #2a2a3a;border-radius:6px;
+      background:none;border:1px solid #1e2440;border-radius:6px;
       color:#666;font-size:.78rem;font-weight:600;padding:5px 14px;cursor:pointer
     }
     .f-btn.active,.f-btn:hover{background:#7c83fd;border-color:#7c83fd;color:#fff}
-    .f-sep{width:1px;height:20px;background:#2a2a3a;margin:0 4px}
+    .f-sep{width:1px;height:20px;background:#1e2440;margin:0 4px}
     .f-right{margin-left:auto}
 
     /* ── Cards grid ── */
@@ -112,10 +114,10 @@
 
     /* ── Stock card ── */
     .stock-card{
-      background:#15151e;border:1px solid #1e1e2e;border-radius:12px;
+      background:#0d1220;border:1px solid #1c2238;border-radius:12px;
       overflow:hidden;transition:border-color .2s,box-shadow .2s
     }
-    .stock-card:hover{border-color:#333;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+    .stock-card:hover{border-color:#2a3058;box-shadow:0 4px 28px rgba(0,0,0,.5)}
 
     .card-header{
       display:flex;justify-content:space-between;align-items:flex-start;
@@ -132,7 +134,7 @@
     .neutral{color:#888}
 
     /* ── Mini chart ── */
-    .mini-chart{height:180px;width:100%;position:relative;background:#12121a}
+    .mini-chart{height:180px;width:100%;position:relative;background:#0c1020}
     .chart-loading{
       position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
       font-size:.75rem;color:#444
@@ -141,7 +143,7 @@
     /* ── Card footer ── */
     .card-footer{
       display:flex;justify-content:space-between;
-      padding:10px 16px;border-top:1px solid #1a1a22;
+      padding:10px 16px;border-top:1px solid #141928;
       font-size:.78rem;color:#666
     }
     .card-footer .cmp{font-weight:600;color:#e0e0e0}
@@ -153,13 +155,14 @@
     }
     .badge-buy{background:#1a3a1a;color:#4caf50}
     .badge-sell{background:#3a1a1a;color:#f44336}
+    .badge-t1{background:#2a1a00;color:#ff9800}
 
     /* ── Holdings/Recent table ── */
-    table{width:100%;border-collapse:collapse;font-size:.83rem;background:#15151e;border-radius:10px;overflow:hidden}
-    thead tr{background:#1a1a2e}
+    table{width:100%;border-collapse:collapse;font-size:.83rem;background:#0d1220;border-radius:10px;overflow:hidden}
+    thead tr{background:#121830}
     th{padding:11px 14px;text-align:left;color:#666;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px}
-    tbody tr{border-bottom:1px solid #1a1a22;transition:background .15s}
-    tbody tr:hover{background:#1c1c28}
+    tbody tr{border-bottom:1px solid #141928;transition:background .15s}
+    tbody tr:hover{background:#131928}
     td{padding:10px 14px}
     .error-row td{color:#f44336;font-style:italic}
     .empty-msg{text-align:center;padding:40px;color:#333}
@@ -170,11 +173,11 @@
     .day-chip.recent{background:#1a2a3a;color:#7c83fd;border:1px solid #7c83fd}
     .day-chip.older{background:#2a2a1a;color:#ff9800;border:1px solid #ff9800}
 
-    .section-label{font-size:.72rem;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #1a1a22}
+    .section-label{font-size:.72rem;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #141928}
 
     .tab-toolbar{display:flex;align-items:center;gap:10px;padding:0 0 16px 0;flex-wrap:wrap}
     .tab-toolbar select{
-      background:#15151e;color:#e0e0e0;border:1px solid #2a2a3a;
+      background:#0d1220;color:#e0e0e0;border:1px solid #1e2440;
       padding:5px 12px;border-radius:6px;font-size:.8rem;cursor:pointer
     }
     .tab-toolbar .label-tag{font-size:.78rem;color:#666}
@@ -184,6 +187,10 @@
     @keyframes flash-red{0%{background:#4a1a1a}100%{background:transparent}}
     .flash-up{animation:flash-green .5s ease}
     .flash-down{animation:flash-red .5s ease}
+
+    /* ── Invest bar ── */
+    .invest-bar-track{height:3px;background:#1c2238;border-radius:2px;margin-top:8px;overflow:hidden}
+    .invest-bar-fill{height:100%;background:linear-gradient(90deg,#7c83fd,#a78bfa);border-radius:2px;transition:width .6s ease;width:0%}
 
     .spinner{
       display:inline-block;width:12px;height:12px;
@@ -237,11 +244,6 @@
 
   <!-- Metrics bar -->
   <div class="pm-bar" id="pm-bar">
-    <div class="pm-metric">
-      <div class="mlabel">% Invested</div>
-      <div class="mvalue" id="pm-invested">—</div>
-      <div class="msub"  id="pm-invested-sub"></div>
-    </div>
     <div class="pm-metric highlight">
       <div class="mlabel">Day's P&amp;L</div>
       <div class="mvalue" id="pm-day-pnl">—</div>
@@ -308,6 +310,17 @@
       <div class="mlabel">Invested</div>
       <div class="mvalue" id="hl-invested">—</div>
       <div class="msub" id="hl-invested-sub"></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">% Invested</div>
+      <div class="mvalue" id="pm-invested">—</div>
+      <div class="msub"  id="pm-invested-sub"></div>
+      <div class="invest-bar-track"><div class="invest-bar-fill" id="pm-invest-bar"></div></div>
+    </div>
+    <div class="pm-metric">
+      <div class="mlabel">Available Cash</div>
+      <div class="mvalue" id="pm-cash">—</div>
+      <div class="msub"  id="pm-cash-sub"></div>
     </div>
   </div>
 
@@ -498,17 +511,6 @@ async function loadPositions(){
   setEl('pm-value', R+fmtK(totalValue));
   setEl('pm-value-sub', 'invested '+R+fmtK(totalInvested));
 
-  // Funds for % invested
-  try {
-    const fr = await fetch('/funds'); const fd = await fr.json();
-    if (!fd.error) {
-      const total   = totalValue + (fd.available_cash||0);
-      const pctInv  = total>0 ? (totalValue/total*100).toFixed(1) : '—';
-      setEl('pm-invested', pctInv+'%');
-      setEl('pm-invested-sub', R+fmtK(totalValue)+' of '+R+fmtK(total));
-    }
-  } catch(_){}
-
   renderCards(positions, errors, totalInvested);
 }
 
@@ -595,11 +597,11 @@ async function renderChartFor(item, prefix){
     const w = container.getBoundingClientRect().width || 340;
     const chart = LightweightCharts.createChart(container, {
       width: w, height: 180,
-      layout: { background:{color:'#12121a'}, textColor:'#555' },
-      grid:   { vertLines:{color:'#1a1a22'}, horzLines:{color:'#1a1a22'} },
+      layout: { background:{color:'#0c1020'}, textColor:'#555' },
+      grid:   { vertLines:{color:'#141928'}, horzLines:{color:'#141928'} },
       crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-      rightPriceScale: { borderColor:'#1e1e2e', scaleMargins:{top:.1,bottom:.1} },
-      timeScale: { borderColor:'#1e1e2e', timeVisible:false },
+      rightPriceScale: { borderColor:'#1c2238', scaleMargins:{top:.1,bottom:.1} },
+      timeScale: { borderColor:'#1c2238', timeVisible:false },
       handleScroll: false, handleScale: false,
     });
 
@@ -681,13 +683,18 @@ async function loadHoldings(){
   holdingMap={};
   let totalPnl=0, totalDayC=0, totalVal=0, totalInv=0;
   holdings.forEach(h=>{
-    const token=String(h.instrument_token);
-    holdingMap[token]={quantity:h.quantity,average_price:h.average_price,close_price:h.close_price||0,ltp:h.last_price||0};
+    const t1Qty   = h.t1_quantity || 0;
+    const totalQty = h.quantity + t1Qty;
+    if (totalQty === 0) return;
+    const token   = String(h.instrument_token);
+    const t1Pnl   = (h.last_price - h.average_price) * t1Qty;
+    const stockPnl = parseFloat(h.pnl || 0) + t1Pnl;
+    holdingMap[token]={quantity:totalQty,average_price:h.average_price,close_price:h.close_price||0,ltp:h.last_price||0};
     if(!currentLtp[token]) currentLtp[token]=h.last_price||0;
-    totalPnl  += parseFloat(h.pnl||0);
-    totalDayC += (h.day_change||0)*h.quantity;
-    totalVal  += (h.last_price||0)*h.quantity;
-    totalInv  += (h.average_price||0)*h.quantity;
+    totalPnl  += stockPnl;
+    totalDayC += (h.day_change||0)*totalQty;
+    totalVal  += (h.last_price||0)*totalQty;
+    totalInv  += (h.average_price||0)*totalQty;
   });
 
   setEl('hl-count', holdings.length);
@@ -702,24 +709,51 @@ async function loadHoldings(){
   setEl('hl-invested', R+fmtK(totalInv));
   setEl('hl-invested-sub', 'cost basis');
 
+  // Funds for % invested
+  try {
+    const fr  = await fetch('/funds');
+    const fd  = await fr.json();
+    const available = fd.error ? 0 : (fd.available_cash || 0);
+    const total     = totalVal + available;
+    const pctInv    = total > 0 ? totalVal / total * 100 : 0;
+    setEl('pm-invested', pctInv.toFixed(1)+'%');
+    setEl('pm-invested-sub', R+fmtK(totalVal)+' deployed');
+    const bar = document.getElementById('pm-invest-bar');
+    if (bar) bar.style.width = Math.min(pctInv, 100)+'%';
+    setEl('pm-cash', fd.error ? '—' : R+fmtK(available));
+    setEl('pm-cash-sub', fd.error ? 'login to view' : R+fmtK(total)+' total');
+  } catch(_){
+    const pctInv = totalVal > 0 ? 100 : 0;
+    setEl('pm-invested', pctInv.toFixed(1)+'%');
+    setEl('pm-invested-sub', R+fmtK(totalVal)+' deployed');
+    const bar = document.getElementById('pm-invest-bar');
+    if (bar) bar.style.width = pctInv+'%';
+    setEl('pm-cash', '—');
+    setEl('pm-cash-sub', 'login to view');
+  }
+
   // ── Cards ──
   const grid=document.getElementById('holdings-cards');
   if(!holdings.length&&!errors.length){
     grid.innerHTML='<div style="color:#333;padding:40px;text-align:center;grid-column:1/-1">No holdings</div>';
   } else {
-    grid.innerHTML=holdings.map(h=>{
-      const token=String(h.instrument_token);
-      const pnl=parseFloat(h.pnl||0);
-      const invested=(h.average_price||0)*h.quantity;
-      const value=(h.last_price||0)*h.quantity;
-      const pnlPct=invested>0?(pnl/invested*100):0;
-      const sizeP=totalInv>0?(invested/totalInv*100).toFixed(1):'0';
+    grid.innerHTML=holdings.filter(h=>(h.quantity+(h.t1_quantity||0))>0).map(h=>{
+      const t1Qty   = h.t1_quantity || 0;
+      const totalQty = h.quantity + t1Qty;
+      const token   = String(h.instrument_token);
+      const t1Pnl   = (h.last_price - h.average_price) * t1Qty;
+      const pnl     = parseFloat(h.pnl||0) + t1Pnl;
+      const invested = (h.average_price||0)*totalQty;
+      const value    = (h.last_price||0)*totalQty;
+      const pnlPct   = invested>0?(pnl/invested*100):0;
+      const sizeP    = totalInv>0?(invested/totalInv*100).toFixed(1):'0';
+      const t1Badge  = t1Qty>0?` <span class="badge badge-t1">T1 +${t1Qty}</span>`:'';
       return `
       <div class="stock-card" data-token="${token}">
         <div class="card-header">
           <div>
-            <div class="card-name">${h.tradingsymbol} <span class="badge badge-buy">HOLD</span></div>
-            <div class="card-meta">Size: ${sizeP}% &nbsp;·&nbsp; ${R}${fmtK(value)} &nbsp;·&nbsp; ${h.quantity.toLocaleString()} qty</div>
+            <div class="card-name">${h.tradingsymbol} <span class="badge badge-buy">HOLD</span>${t1Badge}</div>
+            <div class="card-meta">Size: ${sizeP}% &nbsp;·&nbsp; ${R}${fmtK(value)} &nbsp;·&nbsp; ${totalQty.toLocaleString()} qty</div>
           </div>
           <div class="card-pnl-block">
             <div class="card-pct ${pc(pnlPct)}" id="hl-pct-${token}">${pnlPct>=0?'+':''}${fmt(pnlPct)}%</div>
@@ -749,16 +783,22 @@ async function loadHoldings(){
     return;
   }
   document.getElementById('holdings-body').innerHTML=
-    holdings.map(h=>{
-      const token=String(h.instrument_token);
-      const pnl=parseFloat(h.pnl||0);
-      const pnlPct=(h.average_price&&h.quantity)?pnl/((h.average_price*h.quantity))*100:0;
-      const dayChg=(h.day_change||0)*h.quantity;
-      const val=(h.last_price||0)*h.quantity;
+    holdings.filter(h=>(h.quantity+(h.t1_quantity||0))>0).map(h=>{
+      const t1Qty   = h.t1_quantity || 0;
+      const totalQty = h.quantity + t1Qty;
+      const token   = String(h.instrument_token);
+      const t1Pnl   = (h.last_price - h.average_price) * t1Qty;
+      const pnl     = parseFloat(h.pnl||0) + t1Pnl;
+      const pnlPct  = (h.average_price&&totalQty)?pnl/(h.average_price*totalQty)*100:0;
+      const dayChg  = (h.day_change||0)*totalQty;
+      const val     = (h.last_price||0)*totalQty;
+      const qtyDisplay = t1Qty>0
+        ? `${totalQty.toLocaleString()} <span style="color:#ff9800;font-size:.7rem">(+${t1Qty} T1)</span>`
+        : totalQty.toLocaleString();
       return `<tr>
         <td><strong>${h.tradingsymbol}</strong></td>
         <td><span style="color:#555">${h.exchange}</span></td>
-        <td>${h.quantity.toLocaleString()}</td>
+        <td>${qtyDisplay}</td>
         <td>${R}${fmt(h.average_price)}</td>
         <td id="hl-ltp-${token}" data-ltp="${h.last_price||0}">${R}${fmt(h.last_price)}</td>
         <td id="hl-pnl-${token}" class="${pc(pnl)}">${R}${fmt(pnl)}</td>
