@@ -28,7 +28,7 @@ On Railway these are set as service environment variables.
 - **API Key**: `unyt735beny8a0do`
 - **API Secret**: `0bj7eu2yt9b2bdvktkcacrgciioskb98`
 - Credentials stored in `config.py`
-- Access token stored in `tokens.json` (auto-generated after login, changes daily)
+- Access token stored in **Supabase `app_tokens` table** (primary) and `tokens.json` (local fallback) — persists across Railway redeploys
 
 ## Login Flow
 1. Click **Generate Token** in the dashboard header
@@ -80,6 +80,12 @@ Aurix Capital- Resources/Zerodha/tradebook-TLU065-EQ.csv — Trade history CSV
 
 ### Supabase Table Schema (run once in SQL Editor if recreating)
 ```sql
+CREATE TABLE IF NOT EXISTS app_tokens (
+    api_key      TEXT PRIMARY KEY,
+    access_token TEXT NOT NULL,
+    updated_at   TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS trades (
     id                   SERIAL PRIMARY KEY,
     account              TEXT    NOT NULL DEFAULT 'Aurix Capital',
@@ -124,6 +130,22 @@ CREATE TABLE IF NOT EXISTS first_buy (
 - Cell ID prefixes: `crd-` (position cards), `hl-` (holdings), `rh-` (recent holdings)
 - Currency: `&#8377;` HTML entity (not `₹` literal — encoding issues)
 - Indian number formatting via `fmtK()`: 1.4L, 26.9K, 1.84Cr
+
+#### Holdings tab specifics
+- **T+1 quantity**: Kite returns `quantity` (settled) and `t1_quantity` (unsettled, bought today/yesterday). All calculations use `totalQty = quantity + t1_quantity`. Cards show an orange `T1 +N` badge; table shows `150 (+50 T1)` format. T+1 P&L is computed as `(last_price − average_price) × t1_quantity` since Kite's `pnl` field only covers settled shares
+- **% Invested** metric: `holdings_value / (holdings_value + available_cash)` from `/funds`. Shows progress bar. Falls back gracefully if not logged in
+- **Available Cash** metric: `equity.available.cash` from Kite margins API
+
+#### Positions tab specifics
+- Metrics: Day's P&L, Total P&L, Open Positions, Total Value
+- Filter buttons: All / Long / Short
+
+#### Theme
+- Background: deep blue-dark (`#080b14`) instead of gray-black
+- Cards/panels: `#0d1220`, borders: `#1c2238`
+- Header: gradient (`#0e1528` → `#0a1020`) with subtle glow border
+- Title: purple gradient text (`#818cf8` → `#a78bfa`)
+- Accent: `#7c83fd` (indigo-purple)
 
 ## Key Technical Notes
 - KiteTicker only supports one API key — uses first logged-in account's credentials; instrument tokens are exchange-wide
